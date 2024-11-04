@@ -4,13 +4,14 @@ import { Post } from './post-model'; // Ensure this path is correct
 import { PostService } from './post-service'; // Ensure this path is correct
 import { PostController } from './post-controller'; // Ensure this path is correct
 import { PostRepository } from './post-repository';
-import { UserModule } from 'src/user/user-module';
+import { UserModule } from 'src/User/user-module';
+
 @Module({
   imports: [SequelizeModule.forFeature([Post]),
-  UserModule
+  UserModule,
 ],
   providers: [PostService,PostRepository],
   controllers: [PostController],
-  exports:[PostRepository]
+  exports:[PostService]
 })
 export class PostModule {}

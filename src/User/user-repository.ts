@@ -9,7 +9,14 @@ export class UserRepository {
         private userModel: typeof User,
     ) {}
 
-    async singleUser(id: string): Promise<User> {
-        return this.userModel.findOne({where:{id}});
+    async create(userData: Partial<User>): Promise<User> {
+        const newUser = await this.userModel.create(userData);
+        return newUser;
     }
+
+    async findById(id: string): Promise<User> {
+        return this.userModel.findByPk(id);
+    }
+
+    
 }
