@@ -5,10 +5,11 @@ import { PostService } from './post-service'; // Ensure this path is correct
 import { PostController } from './post-controller'; // Ensure this path is correct
 import { PostRepository } from './post-repository';
 import { UserModule } from 'src/User/user-module';
-
+import { JwtModule } from '@nestjs/jwt';
 @Module({
   imports: [SequelizeModule.forFeature([Post]),
   UserModule,
+  JwtModule,
 ],
   providers: [PostService,PostRepository],
   controllers: [PostController],

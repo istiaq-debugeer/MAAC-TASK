@@ -16,8 +16,13 @@ export class UserController {
     return this.userService.createUser(userData);
   }
 
-  @Get(':id') 
-  async findOne(@Param('id') id: string): Promise<User> {
-    return this.userService.getsingleUser(id);
+  @Get()
+  async findAll(): Promise<userModel[]> {
+    return this.userService.getAllUser();
+  }
+
+  @Get(':identifier') 
+  async findOne(@Param('identifier') identifier: string): Promise<User> {
+    return this.userService.getsingleUser(identifier);
   }
 }

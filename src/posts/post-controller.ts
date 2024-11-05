@@ -1,4 +1,4 @@
-import { Controller,Post,Get,Put,Delete,Body,Param,Request  } from "@nestjs/common";
+import { Controller,Post,Get,Put,Delete,Body,Param,Request,Headers  } from "@nestjs/common";
 import { PostService } from "./post-service";
 import { Post as postModel } from "./post-model";
 
@@ -25,13 +25,24 @@ export class PostController {
   }
 
   @Put(':id')
-  async update(@Param('id') id: string, @Body() postData: Partial<postModel>, @Request() req): Promise<postModel> {
-      return this.postService.updatePost(id, postData, req.user.id); // Assuming req.user.id contains the authenticated user's ID
-  }
+    async updatePost(
+        @Param('id') id: string,
+        @Body() postData: Partial<postModel>,
+        @Headers('Authorization') authHeader: string
+    ) {
+        const jwtToken = authHeader.replace('Bearer ', '');
 
-@Delete(':id')
-async remove(@Param('id') id: string, @Request() req): Promise<void> {
-    return this.postService.deletePost(id, req.user.id);
-}
+        const userId = await this.postService.validateToken(jwtToken);
+        return this.postService.updatePost(id, postData, jwtToken);
+    }
+
+    @Delete(':id')
+    async deletePost(
+        @Param('id') id: string,
+        @Headers('Authorization') authHeader: string
+    ) {
+        const jwtToken = authHeader.replace('Bearer ', '');
+        return this.postService.deletePost(id, jwtToken);
+    }
 }
 

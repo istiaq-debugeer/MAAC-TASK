@@ -5,20 +5,33 @@ import { UserRepository } from "./user-repository";
 
 @Injectable()
 export class UserService {
-  constructor(@InjectModel(User)  private userRepository: UserRepository) {
+  constructor(private readonly userRepository: UserRepository,
+             
+  ) {
     console.log('UserRepository Initialized:', userRepository)
   }
 
     async createUser(userData:Partial<User>):Promise<User>{
         return this.userRepository.create(userData);
     }
-    async getsingleUser(id: string): Promise<User> {
-      const user = await this.userRepository.findById(id);
-      if (!user) {
-          throw new NotFoundException('User not found'); // Updated message
-      }
-      return user;
+
+
+    async getAllUser():Promise<User[]>{
+      return this.userRepository.findAll();
     }
 
+   
+
+    async getsingleUser(identifier: string): Promise<User> {
+      let user = await this.userRepository.findByIdOrUsername(identifier);
+      if (!user) {
+        user = await this.userRepository.findByIdOrUsername(identifier);
+      }
+      if (!user) {
+        throw new NotFoundException('User not found');
+      }
+      return user;
+
+    }
   }
 
