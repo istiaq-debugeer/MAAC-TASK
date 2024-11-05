@@ -46,6 +46,12 @@ export class Post extends Model<Post> {
   })
   createdAt: Date;
 
+  @Column({
+    type: DataType.JSON, 
+    allowNull: true,
+  })
+  tags: string[];
+
   @ForeignKey(()=>User)
   @Column({
     type:DataType.UUID,

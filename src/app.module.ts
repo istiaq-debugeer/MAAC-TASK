@@ -29,9 +29,10 @@ import { AuthModule } from './auth/auth.module';
       autoLoadModels: true,
       synchronize: true,
     }),
+    AuthModule,
     PostModule,
     UserModule,
-    AuthModule,
+    
     
   ],
   controllers: [AppController],

@@ -1,8 +1,7 @@
-import { Controller,Post,Get,Put,Delete,Body,Param,Request,Headers  } from "@nestjs/common";
+import { Controller,Post,Get,Put,Delete,Body,Param,Request,Headers,UseGuards, UnauthorizedException} from "@nestjs/common";
 import { PostService } from "./post-service";
 import { Post as postModel } from "./post-model";
-
-
+import { AuthGuard } from '@nestjs/passport';
 
 
 @Controller('/posts')
@@ -25,24 +24,31 @@ export class PostController {
   }
 
   @Put(':id')
-    async updatePost(
-        @Param('id') id: string,
-        @Body() postData: Partial<postModel>,
-        @Headers('Authorization') authHeader: string
-    ) {
-        const jwtToken = authHeader.replace('Bearer ', '');
+  
+  async updatePost(
+      @Param('id') id: string,
+      @Body() postData: Partial<postModel>,
+      @Request() req
+  ) {
+      const authHeader = req.headers.authorization;
+      if (!authHeader) {
+          throw new UnauthorizedException('Authorization header is missing');
+      }
 
-        const userId = await this.postService.validateToken(jwtToken);
-        return this.postService.updatePost(id, postData, jwtToken);
-    }
+      const jwtToken = authHeader.split(' ')[1];
+      return this.postService.updatePost(id, postData, jwtToken);
+  }
 
-    @Delete(':id')
-    async deletePost(
-        @Param('id') id: string,
-        @Headers('Authorization') authHeader: string
-    ) {
-        const jwtToken = authHeader.replace('Bearer ', '');
-        return this.postService.deletePost(id, jwtToken);
-    }
+  @Delete(':id')
+  async deletePost(@Param('id') id: string, @Request() req) {
+      const authHeader = req.headers.authorization;
+      if (!authHeader) {
+          throw new UnauthorizedException('Authorization header is missing');
+      }
+
+      const jwtToken = authHeader.split(' ')[1];
+      return this.postService.deletePost(id, jwtToken);
+  }
+
 }
 
